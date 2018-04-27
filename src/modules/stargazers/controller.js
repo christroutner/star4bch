@@ -3,6 +3,9 @@ const Stargazer = require('../../models/stargazers')
 // Create new stargazer
 async function createUser (ctx) {
   const user = new Stargazer(ctx.request.body.user)
+
+  console.log(`user: ${JSON.stringify(user,null,2)}`)
+
   try {
     await user.save()
   } catch (err) {
