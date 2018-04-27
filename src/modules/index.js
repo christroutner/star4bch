@@ -7,14 +7,14 @@ module.exports = function initModules (app) {
 
     // Loop through each sub-directory in the modules directory.
     matches.forEach((mod) => {
-      // console.log(`router = ${mod}/router`)
+      //console.log(`router = ${mod}/router`)
       const router = require(`${mod}/router`)
 
       const routes = router.routes
       const baseUrl = router.baseUrl
       const instance = new Router({ prefix: baseUrl })
 
-      // console.log(`routes: ${JSON.stringify(routes, null, 2)}`)
+      //console.log(`routes: ${JSON.stringify(routes, null, 2)}`)
 
       // Loop through each route defined in the router.js file.
       routes.forEach((config) => {
