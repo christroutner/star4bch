@@ -38,6 +38,9 @@ app.use(passport.session())
 const modules = require('../src/modules')
 modules(app)
 
+const cors = require('kcors')
+app.use(cors({origin: '*'}))
+
 // MIDDLEWARE END
 
 app.listen(config.port, () => {
