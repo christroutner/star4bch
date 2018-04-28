@@ -4,7 +4,7 @@ const Stargazer = require('../../models/stargazers')
 async function createUser (ctx) {
   const user = new Stargazer(ctx.request.body.user)
 
-  console.log(`user: ${JSON.stringify(user,null,2)}`)
+  console.log(`user: ${JSON.stringify(user, null, 2)}`)
 
   try {
     await user.save()
@@ -26,7 +26,18 @@ async function getUsers (ctx) {
 // Get info on a specific stargazer
 async function getUser (ctx, next) {
   try {
-    const user = await Stargazer.findById(ctx.params.id, '-password')
+    console.log(`user id: ${ctx.params.id}`)
+
+    await Stargazer.findOne({githubUser: ctx.params.id}, (err, user) => {
+      if (err) {
+        ctx.throw(err)
+      }
+
+      ctx.body = { user }
+    })
+
+/*
+    const user = await Stargazer.findById(ctx.params.id)
     if (!user) {
       ctx.throw(404)
     }
@@ -34,6 +45,7 @@ async function getUser (ctx, next) {
     ctx.body = {
       user
     }
+*/
   } catch (err) {
     if (err === 404 || err.name === 'CastError') {
       ctx.throw(404)
