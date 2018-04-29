@@ -1,11 +1,26 @@
 const Stargazer = require('../../models/stargazers')
+const github = require('./github')
 
 // Create new stargazer
 async function createUser (ctx) {
-  const user = new Stargazer(ctx.request.body.user)
+  // const user = new Stargazer(ctx.request.body.user)
+  const user = ctx.request.body.user
 
   console.log(`user: ${JSON.stringify(user, null, 2)}`)
 
+  try {
+    const success = await github.getClientStargazers(user.githubUser)
+
+    if (success) {
+      ctx.body = { success: true }
+    } else {
+      ctx.body = {success: false}
+    }
+  } catch (err) {
+    console.error(`Error in createUser: `, err)
+  }
+
+/*
   try {
     await user.save()
   } catch (err) {
@@ -15,6 +30,7 @@ async function createUser (ctx) {
   ctx.body = {
     user
   }
+*/
 }
 
 // Get info on existing stargazers
@@ -73,6 +89,8 @@ async function updateUser (ctx) {
 // delete a stargazer
 async function deleteUser (ctx) {
   const user = ctx.body.user
+
+  if (!user) ctx.throw(404)
 
   await user.remove()
 
