@@ -10,7 +10,7 @@ module.exports.routes = [
     method: 'POST',
     route: '/',
     handlers: [
-      stargazer.createUser
+      stargazer.createStargazer
     ]
   },
 

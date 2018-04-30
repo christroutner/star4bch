@@ -2,22 +2,47 @@ const Stargazer = require('../../models/stargazers')
 const github = require('./github')
 
 // Create new stargazer
-async function createUser (ctx) {
+async function createStargazer (ctx) {
   // const user = new Stargazer(ctx.request.body.user)
   const user = ctx.request.body.user
 
   console.log(`user: ${JSON.stringify(user, null, 2)}`)
 
   try {
-    const success = await github.getClientStargazers(user.githubUser)
+    // Check to see if the stargazer has stared the repo.
+    let success = await github.getClientStargazers(user.githubUser)
+    if (!success) {
+      ctx.body = {
+        success: false,
+        message: `User has not starred GitHub repository.`
+      }
+      return
+    }
+
+    // Check to see if the stargazer already exists in the local DB.
+    const userInDb = await findUserInDB(user.githubUser)
+    console.log(`userInDb: ${JSON.stringify(userInDb, null, 2)}`)
+    if (userInDb) {
+      console.log(`User already in DB.`)
+      ctx.body = {
+        success: false,
+        message: 'User already in database.'
+      }
+      return
+    }
+
+    // Check the balance in the wallet.
+
+    // Send money to new stargazer
+
+    // Add stargazer to the local DB.
 
     if (success) {
       ctx.body = { success: true }
-    } else {
-      ctx.body = {success: false}
     }
   } catch (err) {
     console.error(`Error in createUser: `, err)
+    ctx.throw(422, err.message)
   }
 
 /*
@@ -101,9 +126,27 @@ async function deleteUser (ctx) {
 }
 
 module.exports = {
-  createUser,
+  createStargazer,
   getUsers,
   getUser,
   updateUser,
   deleteUser
+}
+
+/*
+  Support/private functions
+*/
+
+async function findUserInDB (username) {
+  try {
+    await Stargazer.findOne({githubUser: username}, (err, user) => {
+      if (err) {
+        throw (err)
+      }
+
+      return user
+    })
+  } catch (err) {
+    throw err
+  }
 }
