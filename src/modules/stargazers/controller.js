@@ -1,5 +1,9 @@
 const Stargazer = require('../../models/stargazers')
 const github = require('./github')
+const ob = require('openbazaar-node')
+
+const OB_USERNAME = 'yourUsername'
+const OB_PASSWORD = 'yourPassword'
 
 // Create new stargazer
 async function createStargazer (ctx) {
@@ -31,11 +35,68 @@ async function createStargazer (ctx) {
       return
     }
 
+    // Initialize config object for OpenBazaar server
+    const obConfig = {
+      apiCredentials: '',
+      server: 'http://localhost',
+      obPort: 4002,
+      clientId: OB_USERNAME,
+      clientSecret: OB_PASSWORD
+    }
+    obConfig.apiCredentials = ob.getOBAuth(obConfig)
+
     // Check the balance in the wallet.
+    const walletBalance = await ob.getWalletBalance(obConfig)
+    console.log(`walletBalance: ${walletBalance.confirmed}`)
+
+    // Verify the address starts with 'bitcoincash:'
+    const validAddress = user.bchAddress.indexOf(`bitcoincash:`)
+    if (validAddress === -1) {
+      ctx.body = {
+        success: false,
+        message: 'Invalid BCH address.'
+      }
+      return
+    }
+
+    // Get the exchange rate in USD.
+    const exchangeRate = await ob.getExchangeRate(obConfig)
+
+    // Calculate $0.10 in Satoshis
+    const usdExchangeRate = exchangeRate.USD
+    const bchPerDollar = 1 / usdExchangeRate
+    // Five and Ten cents in Satoshis.
+    const fiveCents = roundSatoshis(bchPerDollar * 0.05)
+    const tenCents = fiveCents * 2
+    const fifteenCents = fiveCents * 3
+
+    // Exit if balance is not big enough.
+    if (walletBalance.confirmed < fifteenCents) {
+      ctx.body = {
+        success: false,
+        message: 'Out of money.'
+      }
+      return
+    }
 
     // Send money to new stargazer
+    const moneyObj = {
+      address: user.bchAddress,
+      amount: fiveCents,
+      feeLevel: 'ECONOMIC',
+      memo: 'P2P VPS Stargazer Reward'
+    }
+
+    // const result = await ob.sendMoney(obConfig, moneyObj)
+    // console.log(`result: ${JSON.stringify(result, null, 2)}`)
 
     // Add stargazer to the local DB.
+    const stargazer = new Stargazer(user)
+    try {
+      await stargazer.save()
+    } catch (err) {
+      ctx.throw(422, err.message)
+    }
 
     if (success) {
       ctx.body = { success: true }
@@ -137,16 +198,28 @@ module.exports = {
   Support/private functions
 */
 
+// Returns false if user is not in database. Otherwise returns the user model.
 async function findUserInDB (username) {
   try {
-    await Stargazer.findOne({githubUser: username}, (err, user) => {
+    const userRecord = await Stargazer.findOne({githubUser: username}, (err, user) => {
       if (err) {
-        throw (err)
+        return false
       }
 
-      return user
+      // console.log(`findUserInDb: ${JSON.stringify(user, null, 2)}`)
     })
+
+    if (!userRecord) return false
+
+    return userRecord
   } catch (err) {
-    throw err
+    return false
   }
+}
+
+// Rounds the floating point val to a precise number of satoshis
+function roundSatoshis (val) {
+  const satoshis = Number(val) * 100000000
+  const roundedSatoshis = Math.round(satoshis)
+  return roundedSatoshis
 }

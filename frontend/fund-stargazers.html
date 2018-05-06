@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<!--
+Note: This is a proof of concept
+-->
+
+<html lang="en">
+<head>
+  <title>Get Project Stargazers</title>
+
+  <link href="css/bootstrap.min.css" media="all" rel="stylesheet" />
+
+  <style>
+    p {
+      font-size: 18px;
+    }
+    li {
+      font-size: 18px;
+      padding: 5px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+
+  <section>
+    <div class='container'>
+      <div class="row well well-lg">
+        <div class="col-md-12">
+          <p>
+            Visit and star the repositories below. Then enter your GitHub
+            user name and Bitcoin Cash address to claim your BCH. We'll send you
+            $0.10 USD in BCH for each repository you star!
+          </p>
+          <ul>
+            <li>
+              <a href="https://github.com/P2PVPS/p2pvps-client" target="_blank">
+                P2P VPS Client
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="border: 1px solid black; padding: 25px;">
+      <div class="row">
+        <div class="col-sm-12">
+          <form>
+            <div class="form-group">
+              <label for="githubUser">GitHub User Name</label>
+              <input type="text" class="form-control" id="githubUser" placeholder="christroutner">
+            </div>
+            <div class="form-group">
+              <label for="bchAddress">BCH Address</label>
+              <input type="text" class="form-control" id="bchAddress" placeholder="bitcoincash:qpcgp33uf77u0zfu3a8lvcw7kd047f2ttukmffgne5">
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-default" onclick="claimBch()">Claim BCH!</button>
+        </div>
+
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-default" onclick="getUser()">Get Stargazer</button>
+        </div>
+
+        <div class="col-sm-4">
+          <button type="button" class="btn btn-default" onclick="deleteUser()">Delete Stargazer</button>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js?body=1"></script>
+
+  <script type="text/javascript">
+    //Global Variables
+    const serverIp = '192.210.166.29';
+    const serverPort = '5000';
+
+    function claimBch() {
+      const username = $('#githubUser').val();
+      const bchAddress = $('#bchAddress').val();
+
+      // Validation
+      if(username === "" || bchAddress === "") {
+        alert('Invalid input. Please correct.')
+      }
+
+      const obj = {
+        user: {
+          githubUser: username,
+          bchAddress: bchAddress
+        }
+      }
+
+      $.post(`http://${serverIp}:${serverPort}/stargazers`, obj, function(data) {
+        //debugger;
+        if(data.success) {
+          console.log(`claimBch() succeeded!: ${JSON.stringify(data)}`)
+        } else {
+          console.log(`Failure: ${data.message}`)
+        }
+
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        debugger;
+
+        if(errorThrown === "Unprocessable Entity") {
+          const isDuplicateKey = jqXHR.responseText.indexOf('duplicate key')
+          const isDuplicateBCH = jqXHR.responseText.indexOf('bitcoincash')
+
+          if(isDuplicateKey && isDuplicateBCH) {
+            console.log(`Failure: Duplicate BCH address. Money has already been sent to that address.`)
+          } else {
+            console.error(`Error in claimBch(): `, errorThrown)
+          }
+        } else {
+          console.error(`Error in claimBch(): `, errorThrown)
+        }
+      });
+    }
+
+    function getUser() {
+      const username = $('#githubUser').val();
+      const bchAddress = $('#bchAddress').val();
+
+      // Validation
+      if(username === "") {
+        alert('Invalid input. Please correct.')
+      }
+
+      $.get(`http://${serverIp}:${serverPort}/stargazers/${username}`, '', function(data) {
+        //debugger;
+        console.log('Success!')
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        //debugger;
+        console.error(`Error in getUser(): `, errorThrown)
+      });
+    }
+
+
+    function deleteUser() {
+      const username = $('#githubUser').val();
+
+      // Validation
+      if(username === "") {
+        alert('Invalid input. Please correct.')
+      }
+
+      $.ajax({
+        url: `http://${serverIp}:${serverPort}/stargazers/${username}`,
+        type: 'DELETE',
+        success: function(data) {
+          debugger;
+        }
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        debugger;
+      });
+    }
+
+
+    $(document).ready( function() {
+
+      //debugger;
+
+      //$.get('https://api.github.com/orgs/P2PVPS/repos', '', function(data) {
+      //  debugger;
+      //});
+
+      //p2pvps-server2
+      //server-deployment
+      //listing-manager
+      //$.get('https://api.github.com/repos/P2PVPS/p2pvps-client', '', function(data) {
+      //  debugger;
+      //});
+
+      //$.get('https://api.github.com/repos/P2PVPS/p2pvps-client/stargazers', '', function(data) {
+      //  debugger;
+      //});
+
+
+    });
+
+    /*
+    // OLD CODE
+    //First function that is called when the document finishes loading.
+    $(document).ready( function() {
+
+      //Call server to retrieve JSON Gallery data.
+      $.getJSON('http://'+serverIP+':3000/api/frontendwidget/list', '', processJSON);
+    });
+
+    //Callback function executed when JSON data is returned.
+    //Sorts the items in data.collections into different categories.
+    function processJSON(data) {
+      //Fill in the images with data from the KeystoneJS API
+      $('#image1').attr('src', data.collections[0].url1);
+      $('#image1').attr('alt', data.collections[0].alt1);
+      $('#image2').attr('src', data.collections[1].url1);
+      $('#image2').attr('alt', data.collections[1].alt1);
+      $('#image3').attr('src', data.collections[2].url1);
+      $('#image3').attr('alt', data.collections[2].alt1);
+    }
+    */
+
+
+    function getAuth() {
+      debugger;
+
+      var clientID = 'chris.troutner';
+      var clientSecret = '';
+
+      //Encoding as per Centro API Specification.
+      var combinedCredential = clientID+':'+clientSecret;
+      var base64Credential = window.btoa(combinedCredential);
+      var readyCredential = 'Basic '+base64Credential;
+
+      /*
+      //Create the FormData data object and append the file to it.
+      var webForm = new FormData();
+      //newFile.append('file_upload', selectedFile); //This is the raw file that was selected
+      webForm.append('grant_type', 'client_credentials');
+
+      var opts = {
+        //url: 'http://'+global.serverIp+':'+global.serverPort+'/api/fileupload/create',
+        url: 'http://localhost:4002/ob/listings/',
+        headers: {'Authorization': readyCredential},
+        //data: webForm,
+        // data: 'grant_type=client_credentials',
+        //cache: false,
+        // contentType: 'application/x-www-form-urlencoded',
+        //processData: false,
+        type: 'GET',
+        success: function(data){
+
+          debugger;
+        },
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader ("Authorization", "Basic " + btoa(clientID + ":" + clientSecret));
+        },
+
+        //This error function is called if the POST fails for submitting the file itself.
+        error: function(err) {
+          debugger;
+          console.error('AJAX request failed with following response: '+err.responseText);
+        }
+      };
+
+      //Execute the AJAX operation.
+      jQuery.ajax(opts);
+      */
+
+      var settings = {
+        "async": true,
+        "crossDomain": true,
+        "xhrFields": {withCredentials:true},
+        "url": "http://localhost:4002/ob/config",
+        "method": "GET",
+        //"headers": {}
+        "headers": {'Authorization': readyCredential},
+      }
+
+      $.ajax(settings).done(function (response) {
+        console.log(response);
+      });
+
+
+    }
+
+  </script>
+
+</body>
+</html>
