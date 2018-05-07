@@ -10,11 +10,6 @@ The software assumes that an OpenBazaar node is running on the same server. You
 can read the [installation instructions here](https://github.com/OpenBazaar/openbazaar-go/tree/master/docs).
 
 This web app was forked from this [Koa boilerplate](https://github.com/christroutner/babel-free-koa2-api-boilerplate)
-Boilerplate for building APIs with [koa2](https://github.com/koajs/koa/tree/v2.x) and mongodb.
-
-
-With the exception of removing babel as a dependency, this repository is identical
-to Adrian Obelmejias' [koa-api-boilerplate repository](https://github.com/adrianObel/koa2-api-boilerplate).
 
 ## Requirements
 * node __^8.9.4__
