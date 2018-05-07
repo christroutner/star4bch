@@ -1,7 +1,7 @@
 {
-  "name": "babel-free-koa2-api-boilerplate",
-  "version": "3.0.0",
-  "description": "Koa2 boilerplate covering essentials for APIs, babel removed as a dependency",
+  "name": "star4bch",
+  "version": "1.0.0",
+  "description": "Full stack JavaScript web app for rewarding GitHub users with BCH for staring a project.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -24,7 +24,7 @@
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT",
   "apidoc": {
-    "title": "babel-free-koa2-api-boilerplate",
+    "title": "star4bch",
     "url": "localhost:5000"
   },
   "repository": {
@@ -47,7 +47,6 @@
     "koa-router": "^7.0.1",
     "koa-static": "^4.0.2",
     "mongoose": "^5.0.8",
-    "openbazaar-node": "^1.3.2",
     "passport-local": "^1.0.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2"

@@ -1,19 +1,20 @@
-# babel-free-koa2-api-boilerplate
+# star4bch
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com)
 
+This JavaScript web app is used to reward GitHub users for staring a project. The
+front end is a simple web form that a user inputs their GitHub user name and
+Bitcoin Cash (BCH) address. If the user has stared the selected repository, then
+they are sent $0.10 in BCH.
+
+The software assumes that an OpenBazaar node is running on the same server. You
+can read the [installation instructions here](https://github.com/OpenBazaar/openbazaar-go/tree/master/docs).
+
+This web app was forked from this [Koa boilerplate](https://github.com/christroutner/babel-free-koa2-api-boilerplate)
 Boilerplate for building APIs with [koa2](https://github.com/koajs/koa/tree/v2.x) and mongodb.
-Modified to remove babel as a dependency. This repository is now natively compatible
-with node v8.9 or higher.
+
 
 With the exception of removing babel as a dependency, this repository is identical
 to Adrian Obelmejias' [koa-api-boilerplate repository](https://github.com/adrianObel/koa2-api-boilerplate).
-
-This project covers basic necessities of most APIs.
-* Authentication (passport & jwt)
-* Database (mongoose)
-* Testing (mocha)
-* Doc generation with apidoc
-* linting using standard
 
 ## Requirements
 * node __^8.9.4__
@@ -21,22 +22,11 @@ This project covers basic necessities of most APIs.
 
 ## Installation
 ```bash
-git clone https://github.com/christroutner/babel-free-koa2-api-boilerplate.git
+git clone https://github.com/christroutner/star4bch
+npm install
+./install-mongo
+npm start
 ```
-
-## Features
-* [koa2](https://github.com/koajs/koa/tree/v2.x)
-* [koa-router](https://github.com/alexmingoia/koa-router)
-* [koa-bodyparser](https://github.com/koajs/bodyparser)
-* [koa-generic-session](https://github.com/koajs/generic-session)
-* [koa-logger](https://github.com/koajs/logger)
-* [MongoDB](http://mongodb.org/)
-* [Mongoose](http://mongoosejs.com/)
-* [Passport](http://passportjs.org/)
-* [Nodemon](http://nodemon.io/)
-* [Mocha](https://mochajs.org/)
-* [apidoc](http://apidocjs.com/)
-* [ESLint](http://eslint.org/)
 
 ## Structure
 ```
