@@ -120,7 +120,7 @@ Note: This is a proof of concept
   <script type="text/javascript">
 
     //Global Variables
-    const serverIp = '192.210.166.29';
+    const serverIp = 'getbch.p2pvps.net';
     const serverPort = '5000';
 
     const statusMsg = $('#status');
@@ -149,7 +149,8 @@ Note: This is a proof of concept
         }
       }
 
-      $.post(`http://${serverIp}:${serverPort}/stargazers`, obj, function(data) {
+      //$.post(`https://${serverIp}:${serverPort}/stargazers`, obj, function(data) {
+      $.post(`/stargazers`, obj, function(data) {
         //debugger;
         if(data.success) {
           //console.log(`claimBch() succeeded!: ${JSON.stringify(data)}`)

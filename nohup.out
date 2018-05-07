@@ -1,0 +1,37 @@
+
+> star4bch@1.0.0 start /home/trout/node/star4bch
+> node index.js
+
+Server started on 5000
+  <-- POST /stargazers
+user: {
+  "githubUser": "christroutner",
+  "bchAddress": "bitcoincash:qpvwavkrv6m48vf98mm8vnl3qrtza72q8utyv3qdmw"
+}
+userInDb: false
+walletBalance: 52174
+Summary: {
+  "amount": 458,
+  "confirmedBalance": 51716,
+  "memo": "P2P VPS Stargazer Reward",
+  "timestamp": "2018-05-06T20:51:35-04:00",
+  "txid": "e18a0dc865eadeeaccc589dd908750dc4b0d2a6ac59cb9c0a814c51ea409efdc",
+  "unconfirmedBalance": 0
+}
+  --> POST /stargazers 200 1,501ms 16b
+  <-- POST /stargazers
+user: {
+  "githubUser": "christroutner",
+  "bchAddress": "bitcoincash:qrcda28l6sa3dyyul3fqt7muqnhx8uem2v2znfuwq3"
+}
+userInDb: {
+  "repos": [],
+  "_id": "5aefa31780358a41c3d57e68",
+  "githubUser": "christroutner",
+  "bchAddress": "bitcoincash:qpvwavkrv6m48vf98mm8vnl3qrtza72q8utyv3qdmw",
+  "__v": 0
+}
+User already in DB.
+  --> POST /stargazers 200 461ms 55b
+  <-- GET /
+  --> GET / 404 45ms -
