@@ -7,7 +7,6 @@ const OB_PASSWORD = 'yourPassword'
 
 // Create new stargazer
 async function createStargazer (ctx) {
-  // const user = new Stargazer(ctx.request.body.user)
   const user = ctx.request.body.user
 
   console.log(`user: ${JSON.stringify(user, null, 2)}`)
@@ -74,49 +73,37 @@ async function createStargazer (ctx) {
     if (walletBalance.confirmed < fifteenCents) {
       ctx.body = {
         success: false,
-        message: 'Out of money.'
+        message: 'Out of money. Contact team@p2pvps.org or try again later.'
       }
+      return
+    }
+
+    // Add stargazer to the local DB.
+    // Do this before sending money, incase someone tries to re-use the same
+    // BCH address.
+    const stargazer = new Stargazer(user)
+    try {
+      await stargazer.save()
+    } catch (err) {
+      ctx.throw(422, err.message)
       return
     }
 
     // Send money to new stargazer
     const moneyObj = {
       address: user.bchAddress,
-      amount: fiveCents,
+      amount: tenCents,
       feeLevel: 'ECONOMIC',
       memo: 'P2P VPS Stargazer Reward'
     }
+    const result = await ob.sendMoney(obConfig, moneyObj)
+    console.log(`Summary: ${JSON.stringify(result, null, 2)}`)
 
-    // const result = await ob.sendMoney(obConfig, moneyObj)
-    // console.log(`result: ${JSON.stringify(result, null, 2)}`)
-
-    // Add stargazer to the local DB.
-    const stargazer = new Stargazer(user)
-    try {
-      await stargazer.save()
-    } catch (err) {
-      ctx.throw(422, err.message)
-    }
-
-    if (success) {
-      ctx.body = { success: true }
-    }
+    ctx.body = { success: true }
   } catch (err) {
-    console.error(`Error in createUser: `, err)
+    console.error(`Error in createStargazer: `, err)
     ctx.throw(422, err.message)
   }
-
-/*
-  try {
-    await user.save()
-  } catch (err) {
-    ctx.throw(422, err.message)
-  }
-
-  ctx.body = {
-    user
-  }
-*/
 }
 
 // Get info on existing stargazers

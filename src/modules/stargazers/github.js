@@ -26,7 +26,7 @@ async function getClientStargazers (username) {
     // user name.
     for (let i = 0; i < data.length; i++) {
       const thisUser = data[i].login
-      console.log(`thisUser: ${thisUser}`)
+      // console.log(`thisUser: ${thisUser}`)
 
       if (thisUser === username) {
         return true

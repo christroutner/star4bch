@@ -28,8 +28,8 @@ module.exports.routes = [
     handlers: [
       stargazer.getUser
     ]
-  },
-
+  }
+/*
   {
     method: 'PUT',
     route: '/:id',
@@ -47,5 +47,5 @@ module.exports.routes = [
       stargazer.deleteUser
     ]
   }
-
+*/
 ]

@@ -140,6 +140,8 @@ Note: This is a proof of concept
         return
       }
 
+      statusMsg.text(`Sending data to server...`)
+
       const obj = {
         user: {
           githubUser: username,
@@ -174,7 +176,7 @@ Note: This is a proof of concept
           }
         } else {
           //console.error(`Error in claimBch(): `, errorThrown)
-          statusMsg.text(`Error: ${errorThrown}`)
+          statusMsg.text(`Error! The server may be down. Please try again later.`)
         }
       });
     }
